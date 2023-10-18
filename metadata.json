@@ -1,0 +1,27 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "eniel160990@gmail.com",
+                "Name": "Eniel"
+            }
+        ],
+        "Category": "Hardware",
+        "Description": "Widget to manage primary battery configuration using Dell Client Configuration Toolkit (CCTK).",
+        "Description[es]": "Widget para administrar la configuración de la batería principal mediante Dell Client Configuration Toolkit (CCTK).",
+        "EnabledByDefault": true,
+        "Icon": "battery",
+        "Id": "cctk-batterycfg",
+        "License": "GPL3",
+        "Name": "CCTK BatteryCfg",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "0.0.1",
+        "Website": ""
+    },
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-NotificationArea": "true",
+    "X-Plasma-NotificationAreaCategory": "Hardware"
+}
