@@ -8,7 +8,7 @@ CCTK BatteryCfg
 </div>
 <br>
 
-# Asus® Battery Health Switcher
+# Dell® CCTK BatteryCfg
 KDE Plasma widget to manage primary battery configuration using Dell Client Configuration Toolkit (CCTK).
 
 ## Install
