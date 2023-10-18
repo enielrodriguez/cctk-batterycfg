@@ -63,7 +63,7 @@ Item {
     // CustomDataSource for querying the current PrimaryBattChargeCfg status
     CustomDataSource {
         id: queryStatusDataSource
-        command: root.pkexecPath + " /home/eniel/Downloads/dev/configs-for-testing/dell/cctk --PrimaryBattChargeCfg"
+        command: root.pkexecPath + " /opt/dell/dcc/cctk --PrimaryBattChargeCfg"
     }
 
     // CustomDataSource for setting the PrimaryBattChargeCfg status
@@ -73,7 +73,7 @@ Item {
         // Dynamically set in switchStatus(). Set a default value to avoid errors at startup.
         property string status: "adaptive"
 
-        property string seedCmd: root.pkexecPath + " /home/eniel/Downloads/dev/configs-for-testing/dell/cctk --PrimaryBattChargeCfg="
+        property string seedCmd: root.pkexecPath + " /opt/dell/dcc/cctk --PrimaryBattChargeCfg="
 
         // Commands to set different PrimaryBattChargeCfg modes
         property var cmds: {
