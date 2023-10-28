@@ -30,13 +30,14 @@ Item {
 
     // This property represents the current PrimaryBattChargeCfg value
     // Note: This value can change after the execution of onCompleted()
-    property string currentStatus: "adaptive"
+    property string currentStatus: "standard"
 
     // The desired value for PrimaryBattChargeCfg
-    property string desiredStatus: "adaptive"
+    // Note: This value can change after the execution of onCompleted()
+    property string desiredStatus: "standard"
 
     // A flag indicating whether the widget is compatible with the system
-    property bool isCompatible: true
+    property bool isCompatible: false
 
     // The notification tool to use (e.g., "zenity" or "notify-send").
     // It is defined automatically through a search in the user's system.
@@ -46,7 +47,7 @@ Item {
     property bool loading: false
 
     // The currently displayed icon based on the current status
-    property string icon: root.icons[root.currentStatus]
+    property string icon: root.isCompatible ? root.icons[root.currentStatus] : root.icons.error
 
     // Set the icon for the Plasmoid
     Plasmoid.icon: root.icon
@@ -58,8 +59,7 @@ Item {
 
     // Executed when the component is completed
     Component.onCompleted: {
-        findNotificationTool()
-        queryStatus()
+        initialSetup()
     }
 
     // CustomDataSource for querying the current PrimaryBattChargeCfg status
@@ -95,15 +95,16 @@ Item {
     // CustomDataSource for finding the notification tool (notify-send or zenity)
     CustomDataSource {
         id: findNotificationToolDataSource
-        command: "find /usr -type f -executable \\( -name \"notify-send\" -o -name \"zenity\" \\)"
+        // Find notification tool and exclude all “permission denied” errors
+        command: "find /usr -type f -executable \\( -name \"notify-send\" -o -name \"zenity\" \\) 2>&1 | grep -v \"Permission denied\""
     }
 
     // CustomDataSource for sending notifications
     CustomDataSource {
         id: sendNotification
 
-        // Dynamically set in showNotification(). Set a default value to avoid errors at startup.
-        property string tool: "notify-send"
+        // Dynamically set in showNotification().
+        property string tool: root.notificationTool
 
         property string iconURL: ""
         property string title: ""
@@ -114,7 +115,7 @@ Item {
             "notify-send": `notify-send -i ${iconURL} '${title}' '${message}' ${options}`,
             "zenity": `zenity --notification --text='${title}\\n${message}'`
         }
-        command: cmds[tool]
+        command: tool ? cmds[tool] : ""
     }
 
 
@@ -125,8 +126,7 @@ Item {
             root.loading = false
 
             if (stderr) {
-                root.icon = root.icons.error
-                showNotification(root.icons.error, stderr, stderr)
+                showNotification(root.icons.error, stderr)
             } else {
                 // If there are no errors we assume that the system is compatible.
                 root.isCompatible = true
@@ -145,14 +145,9 @@ Item {
         function onExited(exitCode, exitStatus, stdout, stderr){
             root.loading = false
 
-            if(exitCode === 127){
-                showNotification(root.icons.error, i18n("Root privileges are required."))
-                root.desiredStatus = root.currentStatus
-                return
-            }
-
             if (stderr) {
-                showNotification(root.icons.error, stderr, stdout)
+                showNotification(root.icons.error, stderr)
+                root.desiredStatus = root.currentStatus
             } else {
                 root.currentStatus = root.desiredStatus
                 showNotification(root.icons[root.currentStatus], i18n("Status switched to %1.", root.currentStatus.toUpperCase()))
@@ -161,31 +156,42 @@ Item {
     }
 
 
-    // Connection for finding the notification tool
+    // Connection for finding the notification tool and querying the current status
     Connections {
         target: findNotificationToolDataSource
         function onExited(exitCode, exitStatus, stdout, stderr){
 
-            if (stdout) {
-                // Many Linux distros have two notification tools
-                var paths = stdout.trim().split("\n")
-                var path1 = paths[0]
-                var path2 = paths[1]
-
-                // Prefer notify-send because it allows using an icon; zenity v3.44.0 does not accept an icon option
-                if (path1 && path1.trim().endsWith("notify-send")) {
-                    root.notificationTool = "notify-send"
-                } else if (path2 && path2.trim().endsWith("notify-send")) {
-                    root.notificationTool = "notify-send"
-                } else if (path1 && path1.trim().endsWith("zenity")) {
-                    root.notificationTool = "zenity"
-                } else {
-                    console.warn("No compatible notification tool found.")
-                }
+            if(stderr){
+                console.warn(stderr)
+            } else {
+                setupNotificationTool(stdout)
             }
+
+            queryStatus()
         }
     }
 
+    function setupNotificationTool(stdout: string){
+        if(!stdout){
+            return
+        }
+
+        // Many Linux distros have two notification tools
+        var paths = stdout.trim().split("\n")
+        var path1 = paths[0]
+        var path2 = paths[1]
+
+        // Prefer notify-send because it allows using an icon; zenity v3.44.0 does not accept an icon option
+        if (path1 && path1.trim().endsWith("notify-send")) {
+            root.notificationTool = "notify-send"
+        } else if (path2 && path2.trim().endsWith("notify-send")) {
+            root.notificationTool = "notify-send"
+        } else if (path1 && path1.trim().endsWith("zenity")) {
+            root.notificationTool = "zenity"
+        } else {
+            console.warn("No compatible notification tool found.")
+        }
+    }
 
     // Get the current status by executing the queryStatusDataSource
     function queryStatus() {
@@ -205,18 +211,21 @@ Item {
 
     // Show a notification with icon, message, and title
     function showNotification(iconURL: string, message: string, title = i18n("Battery Charge Configuration"), options = ""){
-        sendNotification.tool = root.notificationTool
+        if(root.notificationTool){
+            sendNotification.tool = root.notificationTool
+            sendNotification.iconURL = iconURL
+            sendNotification.title = title
+            sendNotification.message = message
+            sendNotification.options = options
 
-        sendNotification.iconURL = iconURL
-        sendNotification.title = title
-        sendNotification.message = message
-        sendNotification.options = options
-
-        sendNotification.exec()
+            sendNotification.exec()
+        } else {
+            console.warn(message)
+        }
     }
 
     // Find the notification tool by executing the findNotificationToolDataSource
-    function findNotificationTool() {
+    function initialSetup() {
         findNotificationToolDataSource.exec()
     }
 
