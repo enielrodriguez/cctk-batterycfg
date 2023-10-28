@@ -16,7 +16,7 @@ Item {
     // Path to the pkexec command-line tool for gaining root privileges
     property string pkexecPath: "/usr/bin/pkexec"
 
-    property string cctkPath: "/home/eniel/Downloads/dev/configs-for-testing/dell/cctk"
+    property string cctkPath: "/opt/dell/dcc/cctk"
 
     // Icons for each status and errors
     property var icons: {
