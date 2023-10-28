@@ -16,6 +16,8 @@ Item {
     // Path to the pkexec command-line tool for gaining root privileges
     property string pkexecPath: "/usr/bin/pkexec"
 
+    property string cctkPath: "/home/eniel/Downloads/dev/configs-for-testing/dell/cctk"
+
     // Icons for each status and errors
     property var icons: {
         "standard": Qt.resolvedUrl("./image/standard.png"),
@@ -63,7 +65,7 @@ Item {
     // CustomDataSource for querying the current PrimaryBattChargeCfg status
     CustomDataSource {
         id: queryStatusDataSource
-        command: root.pkexecPath + " /opt/dell/dcc/cctk --PrimaryBattChargeCfg"
+        command: `${root.pkexecPath} ${root.cctkPath} --PrimaryBattChargeCfg`
     }
 
     // CustomDataSource for setting the PrimaryBattChargeCfg status
@@ -73,7 +75,9 @@ Item {
         // Dynamically set in switchStatus(). Set a default value to avoid errors at startup.
         property string status: "adaptive"
 
-        property string seedCmd: root.pkexecPath + " /opt/dell/dcc/cctk --PrimaryBattChargeCfg="
+        property string valSetupPwd: Plasmoid.configuration.biosPassword ? "--ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
+
+        property string seedCmd: `${root.pkexecPath} ${root.cctkPath} ${valSetupPwd} --PrimaryBattChargeCfg=`
 
         // Commands to set different PrimaryBattChargeCfg modes
         property var cmds: {
