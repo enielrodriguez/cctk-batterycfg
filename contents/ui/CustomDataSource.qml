@@ -17,6 +17,10 @@ PlasmaCore.DataSource {
         var stdout = data["stdout"]
         var stderr = data["stderr"]
 
+        if(exitCode === 127 && stderr.includes("Not authorized")){
+            stderr = i18n("Root privileges are required.")
+        }
+
         // Emit the 'exited' signal to indicate that the DataSource execution has completed.
         exited(exitCode, exitStatus, stdout, stderr)
 

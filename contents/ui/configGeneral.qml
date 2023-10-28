@@ -6,25 +6,37 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 Kirigami.FormLayout {
     id: configGeneral
-    anchors.fill: parent + 10
+    anchors.fill: parent
 
     property alias cfg_biosPassword: biosPasswordField.text
+    property alias cfg_needSudo: needSudoField.checked
     property alias cfg_customStart: customStartField.value
     property alias cfg_customStop: customStopField.value
     property alias cfg_iconSize: iconSizeComboBox.currentValue
 
     Kirigami.Separator {
         Kirigami.FormData.isSection: true
-        Kirigami.FormData.label: i18n("BIOS password")
+        Kirigami.FormData.label: i18n("Security")
     }
 
     TextField {
         id: biosPasswordField
-        Kirigami.FormData.label: i18n("Leave empty if you do not have a BIOS password")
+        Kirigami.FormData.label: i18n("BIOS password (leave empty if you do not have a BIOS password):")
+    }
+    Label {
+        id: noteBiosPasswordField
+        text: "NOTE: Passwords with special characters must be enclosed in double inverted quotes (“”)"
     }
 
+    CheckBox {
+        id: needSudoField
+        text: i18n("I need sudo")
+        anchors.top: noteBiosPasswordField.bottom
+        anchors.topMargin: 15
+    }
     Label {
-        text: "NOTE: Passwords with special characters must be enclosed in double inverted quotes (“”)"
+        text: "NOTE: Check this option if you need sudo to run CCTK"
+        anchors.top: needSudoField.bottom
     }
 
     Kirigami.Separator {
