@@ -5,6 +5,9 @@
         <entry name="biosPassword" type="String">
             <default/>
         </entry>
+        <entry name="needSudo" type="Bool">
+            <default>true</default>
+        </entry>
         <entry name="customStart" type="Int">
             <default>50</default>
         </entry>

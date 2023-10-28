@@ -27,6 +27,12 @@ Or you can download or install it directly from the [KDE Store]() website.
 - Download/clone this repo.
 - Run from a terminal the command `plasmapkg2 -i [widget folder name]`.
 
+## Root even to breathe
+The CCTK tool requires root privileges even to read the status of an option.
+If you want to avoid this:
+1. Allow CCTK to run with root privileges without a password prompt ([How to run a specific program as root without a password prompt?](https://unix.stackexchange.com/questions/18830/how-to-run-a-specific-program-as-root-without-a-password-prompt)).
+2. Go to the widget settings and disable the "I need sudo" option.
+
 ## Disclaimer
 I'm not a widget or KDE developer, I did this by looking at other widgets, using AI chatbots, consulting documentation, etc. So use it at your own risk.
 Any recommendations and contributions are welcome.

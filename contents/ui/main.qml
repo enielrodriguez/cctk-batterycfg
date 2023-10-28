@@ -13,10 +13,10 @@ import org.kde.plasma.plasmoid 2.0
 Item {
     id: root
 
-    // Path to the pkexec command-line tool for gaining root privileges
-    property string pkexecPath: "/usr/bin/pkexec"
+    property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? "--ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
+    property string pkexecPath: Plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : ""
 
-    property string cctkPath: "/opt/dell/dcc/cctk"
+    property string cctkSeedCmd: pkexecPath + " /opt/dell/dcc/cctk " + cctkBiosPasswordOption
 
     // Icons for each status and errors
     property var icons: {
@@ -65,7 +65,11 @@ Item {
     // CustomDataSource for querying the current PrimaryBattChargeCfg status
     CustomDataSource {
         id: queryStatusDataSource
-        command: `${root.pkexecPath} ${root.cctkPath} --PrimaryBattChargeCfg`
+
+        property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? "--ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
+        property string pkexec: Plasmoid.configuration.needSudo ? root.pkexecPath : ""
+
+        command: root.cctkSeedCmd + " --PrimaryBattChargeCfg"
     }
 
     // CustomDataSource for setting the PrimaryBattChargeCfg status
@@ -75,9 +79,7 @@ Item {
         // Dynamically set in switchStatus(). Set a default value to avoid errors at startup.
         property string status: "adaptive"
 
-        property string valSetupPwd: Plasmoid.configuration.biosPassword ? "--ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
-
-        property string seedCmd: `${root.pkexecPath} ${root.cctkPath} ${valSetupPwd} --PrimaryBattChargeCfg=`
+        property string seedCmd: root.cctkSeedCmd + " --PrimaryBattChargeCfg="
 
         // Commands to set different PrimaryBattChargeCfg modes
         property var cmds: {
