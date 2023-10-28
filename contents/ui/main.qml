@@ -212,7 +212,6 @@ Item {
     // Show a notification with icon, message, and title
     function showNotification(iconURL: string, message: string, title = i18n("Battery Charge Configuration"), options = ""){
         if(root.notificationTool){
-            sendNotification.tool = root.notificationTool
             sendNotification.iconURL = iconURL
             sendNotification.title = title
             sendNotification.message = message
