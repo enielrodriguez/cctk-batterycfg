@@ -21,7 +21,7 @@ KDE Plasma widget to manage primary battery configuration using Dell Client Conf
 
 ### From KDE Store
 You can find it in your software center, in the subcategories `Plasma Addons > Plasma Widgets`.  
-Or you can download or install it directly from the [KDE Store]() website.
+Or you can download or install it directly from the [KDE Store](https://store.kde.org/p/2097829/) website.
 
 ### Manually
 - Download/clone this repo.
