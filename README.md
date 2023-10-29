@@ -31,7 +31,7 @@ Or you can download or install it directly from the [KDE Store]() website.
 The CCTK tool requires root privileges even to read the status of an option.
 
 If you want to avoid this:
-1. Allow CCTK to run with root privileges without a password prompt ([How to run a specific program as root without a password prompt?](https://unix.stackexchange.com/questions/18830/how-to-run-a-specific-program-as-root-without-a-password-prompt)).
+1. Allow CCTK (/opt/dell/dcc/cctk) to run with root privileges without a password prompt ([How to run a specific program as root without a password prompt?](https://unix.stackexchange.com/questions/18830/how-to-run-a-specific-program-as-root-without-a-password-prompt)).
 2. Go to the widget settings and disable the "I need sudo" option.
 
 ## Disclaimer
