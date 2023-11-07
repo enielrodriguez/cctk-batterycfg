@@ -13,10 +13,10 @@ import org.kde.plasma.plasmoid 2.0
 Item {
     id: root
 
-    property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? "--ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
-    property string pkexecPath: Plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : ""
+    property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? " --ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
+    property string pkexecPath: Plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : "/usr/bin/sudo"
 
-    property string cctkSeedCmd: pkexecPath + " /opt/dell/dcc/cctk " + cctkBiosPasswordOption
+    property string cctkSeedCmd: pkexecPath + " /opt/dell/dcc/cctk"
 
     // Icons for each status and errors
     property var icons: {
@@ -65,10 +65,6 @@ Item {
     // CustomDataSource for querying the current PrimaryBattChargeCfg status
     CustomDataSource {
         id: queryStatusDataSource
-
-        property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? "--ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
-        property string pkexec: Plasmoid.configuration.needSudo ? root.pkexecPath : ""
-
         command: root.cctkSeedCmd + " --PrimaryBattChargeCfg"
     }
 
@@ -89,7 +85,7 @@ Item {
             "express": seedCmd + "Express",
             "custom": seedCmd + "Custom:" + Plasmoid.configuration.customStart + "-" + Plasmoid.configuration.customStop
         }
-        command: cmds[status]
+        command: cmds[status] + root.cctkBiosPasswordOption
     }
 
     // CustomDataSource for finding the notification tool (notify-send or zenity)
