@@ -13,8 +13,8 @@ import org.kde.plasma.plasmoid 2.0
 Item {
     id: root
 
-    property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? " --ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
-    property string pkexecPath: Plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : "/usr/bin/sudo"
+    property string cctkBiosPasswordOption: plasmoid.configuration.biosPassword ? " --ValSetupPwd=" + plasmoid.configuration.biosPassword : ""
+    property string pkexecPath: plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : "/usr/bin/sudo"
 
     property string cctkSeedCmd: pkexecPath + " /opt/dell/dcc/cctk"
 
@@ -52,11 +52,6 @@ Item {
     // Set the icon for the Plasmoid
     Plasmoid.icon: root.icon
 
-    // Connect to Plasmoid configuration to access user settings
-    Connections {
-        target: Plasmoid.configuration
-    }
-
     // Executed when the component is completed
     Component.onCompleted: {
         initialSetup()
@@ -83,7 +78,7 @@ Item {
             "adaptive": seedCmd + "Adaptive",
             "primacuse": seedCmd + "PrimAcUse",
             "express": seedCmd + "Express",
-            "custom": seedCmd + "Custom:" + Plasmoid.configuration.customStart + "-" + Plasmoid.configuration.customStop
+            "custom": seedCmd + "Custom:" + plasmoid.configuration.customStart + "-" + plasmoid.configuration.customStop
         }
         command: cmds[status] + root.cctkBiosPasswordOption
     }
@@ -231,8 +226,8 @@ Item {
     // Compact representation of the Plasmoid
     Plasmoid.compactRepresentation: Item {
         PlasmaCore.IconItem {
-            height: Plasmoid.configuration.iconSize
-            width: Plasmoid.configuration.iconSize
+            height: plasmoid.configuration.iconSize
+            width: plasmoid.configuration.iconSize
             anchors.centerIn: parent
 
             source: root.icon
