@@ -20,6 +20,7 @@ Kirigami.FormLayout {
     TextField {
         id: biosPasswordField
         Kirigami.FormData.label: i18n("BIOS password (leave empty if you do not have a BIOS password):")
+        echoMode: TextInput.Password
     }
     Label {
         id: noteBiosPasswordField
