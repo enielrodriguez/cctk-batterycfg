@@ -1,22 +1,22 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.0
-import QtQuick.Controls 2.0
-import org.kde.plasma.components 3.0 as PlasmaComponents3
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.plasmoid 2.0
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls
+import org.kde.plasma.components as PlasmaComponents3
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.plasmoid
 
 
 /**
  * This widget uses the Dell Client Configuration Toolkit, therefore it is essential for its operation
  */
 
-Item {
+PlasmoidItem {
     id: root
 
-    property string cctkBiosPasswordOption: Plasmoid.configuration.biosPassword ? " --ValSetupPwd=" + Plasmoid.configuration.biosPassword : ""
-    property string pkexecPath: Plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : "/usr/bin/sudo"
+    property string cctkBiosPasswordOption: plasmoid.configuration.biosPassword ? " --ValSetupPwd=" + plasmoid.configuration.biosPassword : ""
+    property string pkexecPath: plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : "/usr/bin/sudo"
 
-    property string cctkSeedCmd: pkexecPath + " /opt/dell/dcc/cctk"
+    property string cctkSeedCmd: pkexecPath + " /home/eniel/Downloads/dev/configs-for-testing/dell/cctk.sh"
 
     // Icons for each status and errors
     property var icons: {
@@ -52,11 +52,6 @@ Item {
     // Set the icon for the Plasmoid
     Plasmoid.icon: root.icon
 
-    // Connect to Plasmoid configuration to access user settings
-    Connections {
-        target: Plasmoid.configuration
-    }
-
     // Executed when the component is completed
     Component.onCompleted: {
         initialSetup()
@@ -83,7 +78,7 @@ Item {
             "adaptive": seedCmd + "Adaptive",
             "primacuse": seedCmd + "PrimAcUse",
             "express": seedCmd + "Express",
-            "custom": seedCmd + "Custom:" + Plasmoid.configuration.customStart + "-" + Plasmoid.configuration.customStop
+            "custom": seedCmd + "Custom:" + plasmoid.configuration.customStart + "-" + plasmoid.configuration.customStop
         }
         command: cmds[status] + root.cctkBiosPasswordOption
     }
@@ -224,15 +219,11 @@ Item {
         findNotificationToolDataSource.exec()
     }
 
-
-    // Set the preferred representation of the Plasmoid to the compact representation
-    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-
     // Compact representation of the Plasmoid
-    Plasmoid.compactRepresentation: Item {
-        PlasmaCore.IconItem {
-            height: Plasmoid.configuration.iconSize
-            width: Plasmoid.configuration.iconSize
+    compactRepresentation: Item {
+        Kirigami.Icon {
+            height: plasmoid.configuration.iconSize
+            width: plasmoid.configuration.iconSize
             anchors.centerIn: parent
 
             source: root.icon
@@ -243,16 +234,16 @@ Item {
                 anchors.fill: parent
                 hoverEnabled: true
                 onClicked: {
-                    plasmoid.expanded = !plasmoid.expanded
+                    expanded = !expanded
                 }
             }
         }
     }
 
     // Full representation of the Plasmoid
-    Plasmoid.fullRepresentation: Item {
-        Layout.preferredWidth: 400 * PlasmaCore.Units.devicePixelRatio
-        Layout.preferredHeight: 300 * PlasmaCore.Units.devicePixelRatio
+    fullRepresentation: Item {
+        Layout.preferredWidth: 400
+        Layout.preferredHeight: 300
 
         ColumnLayout {
             anchors.centerIn: parent
@@ -305,8 +296,8 @@ Item {
     }
 
     // Main tooltip text for the Plasmoid
-    Plasmoid.toolTipMainText: i18n("Switch Battery Charge Configuration mode.")
+    toolTipMainText: i18n("Switch Battery Charge Configuration mode.")
 
     // Subtext for the tooltip, indicating the current status
-    Plasmoid.toolTipSubText: root.isCompatible ? i18n("Battery Charge Configuration is set to %1.", root.currentStatus.toUpperCase()) : i18n("The Battery Charge Configuration feature is not available.")
+    toolTipSubText: root.isCompatible ? i18n("Battery Charge Configuration is set to %1.", root.currentStatus.toUpperCase()) : i18n("The Battery Charge Configuration feature is not available.")
 }
