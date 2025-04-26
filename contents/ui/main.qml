@@ -16,7 +16,7 @@ PlasmoidItem {
     property string cctkBiosPasswordOption: plasmoid.configuration.biosPassword ? " --ValSetupPwd=" + plasmoid.configuration.biosPassword : ""
     property string pkexecPath: plasmoid.configuration.needSudo ? "/usr/bin/pkexec" : "/usr/bin/sudo"
 
-    property string cctkSeedCmd: pkexecPath + " /home/eniel/Downloads/dev/configs-for-testing/dell/cctk.sh"
+    property string cctkSeedCmd: pkexecPath + " /opt/dell/dcc/cctk"
 
     // Icons for each status and errors
     property var icons: {
